@@ -1,0 +1,470 @@
+<!-- Based on InputCat.txt as committed to BitBucket on 20140728 -->
+<input date="20140815">
+
+<params maxc="1K" mspcT="500" gjs="0">
+    <simspace mmx=":1500" mmy=":1K"/>
+    <izhi v="-70" u="-14" vth="30"/>
+    <filters>
+        <!--
+        Each <filter> element defines a filter to be fired for the cell type specified by the type attribute (ID or character).
+        The timeminmax/mmt attribute is in milliseconds.
+        The recur/r attribute is how often the filter will fire in milliseconds.
+        The [x+y+z]minmax/mm[x+y+z] attributes define a bounding box.
+        The fractionT/fracT attribute is a fraction in 1,000ths of cells to fire of the specified type within the bounding box (1000 = 100%). To enable image filters (image_filter[_FILTER_INDEX].pgm) set it to -1 or to "image".
+        The index/id attribute explicitly states the index. Index 0 is reserved for a progressive mesh (flyswatter) firing pattern.
+        -->
+        <filter id="0" type=""  mmt="0:0"    r="0"  mmx="0:0"     mmy="0:0"     mmz="0:0"    fracT="0"/>
+        <filter id="1" type=""  mmt="0:500"  r="20" mmx="100:300" mmy="390:410" mmz="-1M:1M" fracT="1K"/>
+        <filter id="2" type=""  mmt="0:500"  r="20" mmx="500:700" mmy="390:410" mmz="-1M:1M" fracT="1K"/>
+        <filter id="3" type=""  mmt="550:1M" r="20" mmx="390:410" mmy="100:300" mmz="-1M:1M" fracT="1K"/>
+        <filter id="4" type=""  mmt="550:1M" r="20" mmx="390:410" mmy="500:700" mmz="-1M:1M" fracT="1K"/>
+        <filter id="5" type="M" mmt="5:500"  r="5"  mmx="0:1M"    mmy="0:1M"    mmz="-1M:1M" fracT="image"/>
+        <filter id="6" type="M" mmt="500:1K" r="20" mmx="0:1M"    mmy="0:1M"    mmz="-1M:1M" fracT="image"/>
+        <filter id="7" type=""  mmt="20:1M"  r="40" mmx="0:1M"    mmy="0:1M"    mmz="-1M:1M" fracT="image"/>
+    </filters>
+    <stdpsT>-10*20, -40*20, 0, 160*20, 40*20</stdpsT>
+</params>
+
+<types n="12" chars="P N G B A S T I C M R D">
+
+<!-- Purkinje cells -->
+<type id="0" char="P">
+<!--
+P C D must have identical spacing
+Eccles p4 cat P-soma space L:50u, T:50-100=>75u; dendrites p71 [V:300u]xT:250 x L:10u, p195 ~V:300=>320u xT:225=>240u xL:6=>10u
+Eccles Dendrites p4.1 V:300u=cat molecular layer (310-400u human) x pp6,8 ff2,4B ~square T:300u x p195 V:6u+2u other space
+Parallel fiber synapses/P-cell_dendrite p13 209K cat and 208K-278K monkey (Fox+Bernard '57)
+{p178-187 P-axon collaterals=>T:infra- +L:supra-ganglionic plexus, inhibit somas+dends T:Golgi+L:basket cells: thus far ignored}
+lw 3.25.13 soon fix C=>P climbing fiber 1000s synapses in Pdend.tree; no Pden2
+lw 8.25.13 want multi-spike 10+1 in 17-95ms plus some faster weaker
+lw 9.2.13 P,C,D.MCX,Y,XO =200,19,100u;P.MDX,Y==200,19u, so #P 1/(200x19=3800)~=old 1/(75*50=3750) narrower so G.MDX=600 = 3*P.MDx=200
+lw 9/3/13 2x2x2u 2nd P-dend restored for use by B_A basket cell inhibition
+-->
+    <somas dx="200" dy="19" altox="100" mmz="0:"/>
+    <axons n="1">
+        <field wx="2" wy="2" wz="2" ox="0" oy="0" oz="-1K" asp="1700"/>
+    </axons>
+    <dens n="2">
+        <!-- 20130808: mmds and mmpfT are per-field -->
+        <field wx="200" wy="19" wz="320" oz="160" mmdsp="200:400" mmpfT="1K:1K" lnrxT="1700"/>
+        <field wx="2"   wy="2"  wz="2"   oz="-1"  mmdsp="500:500" mmpfT="1K:1K"/>
+    </dens>
+    <syns>
+    <!--<syns its="1" XTHRES="126" MCSPFR="8K" GTHDKM="800K">-->
+        <ots rest="0"/>
+        <daodsT D="1K" rest="0"/>
+        <owsT D="-16K" rest="0"/>
+    </syns>
+    <!-- Regular spiking (RS) -->
+    <!--<izhi AT="20" BT="200" CT="-65K" DT="8K"/>-->
+    <!-- Fast spiking (FS) -->
+    <izhi AT="100" BT="200" CT="-65K" DT="2K"/>
+    <!-- Intrinsically bursting (IB) -->
+    <!--<izhi AT="20" BT="200" CT="-55K" DT="4K"/>-->
+</type>
+
+<!-- Granule cells -->
+<type id="1" char="N">
+<!--
+use either MAYY=3000u for Eccles:cat or 5000u or 6000u Harvey:rat or others:human
+Eccles N-dend pp11-13  3 to 5 {branch once? => 4-10 claws} 10-30u long;
+monkey 208K-278K (cat 209K} parallel fibers cross each P-dend_tree p13
+p13 parallel fibers 0.2u diam (upper N-cells) to 1.0u (deeper N-cells => parallel fibers) {max cat P-cell mb 2-3mm total Eccles p13}
+p118 avg 4.5 N-cells/rosettes; each N-cell has dendritic inputs from 4.5 different rosettes =>4.5*4.5 = 20 N-cell-dend/rosette
+p118 (+f19 p33) ~44 rosettes/mossy-fiber widely L:spread => ~880 mossy-to-N-dend synapses per mossy fiber (400-600/folium) p118
+2 or more mossy fibers must excite a graNule-cell for it to spike p119
+lw 3.17.13 MCX,Y=6(n:5), TCZP=900(n:600), 3.19.13 MDX,Y=32=>28(n:10)=2*R.MCX,Y
+lw 3.25.13 N.MAZO=+332(n:300)=160--172=P.MDZO-{N.MCmidZ=-20+MCZ*(CZLN-1)/2}
+lw 3.25.13 soon fix N,G.SYNDA=0 (n:250).
+lw 8.11.13 N.MDX,Y=20,20(n:28,28) = 2*R.MAXX,YY
+-->
+    <somas dx="6" dy="6" dz="-16" altox="0" mmz="-20:">
+        <zlvs n="20">
+            <psT>900*20</psT>
+            <asfsT>1000,1065,1130,1195, 1260,1325,1390,1455, 1520,1585,1650,1715,1780, 1845,1910,1975,2040, 2110,2180,2250,</asfsT>
+        </zlvs>
+    </somas>
+    <axons n="1">
+        <field wx="2" wy="3K" wz="2" ox="0" oy="0" oz="332" asp="300"/>
+    </axons>
+    <dens n="1">
+        <field wx="20" wy="20" wz="16" mmdsp="400:700" mmpfT="990:1K" lnrxT="6K"/>
+    </dens>
+    <syns>
+    <!--<syns its="1" XTHRES="40" MCSPFR="2K" GTHDKM="700K">-->
+        <ots P="1" rest="0"/>
+        <!--<daodsT P="1K" N="0" G="250" B="750" A="750" S="750" T="750" I="750" C="0" M="0" R="0" D="0"/>-->
+        <daodsT P="666" N="0" G="166" B="500" A="500" S="500" T="500" I="500" C="0" M="0" R="0" D="0"/>
+        <owsT P="200" rest="0"/>
+    </syns>
+    <!-- Regular spiking (RS) -->
+    <izhi AT="20" BT="200" CT="-65K" DT="8K"/>
+    <!-- Fast spiking (FS) -->
+    <!--<izhi AT="100" BT="200" CT="-65K" DT="2K"/>-->
+    <!-- Intrinsically bursting (IB) -->
+    <!--<izhi AT="20" BT="200" CT="-55K" DT="4K"/>-->
+</type>
+
+<!-- Golgi cells -->
+<type id="2" char="G">
+<!--
+{ 1/10 to 1/8 as many G as P-cells Eccles pp22-23: 10% + 1% to 2% of P-cell # Try P/G=1/9=0.11 11/3/13 lw}
+Eccles p210 f116 Golgi dendrites not overlap, packed [oblate] hex cyldrs 3xMDX_P in T_diam. Inhibits too-broad active mossy inputs.
+lw 9/2/13  For #P/#G=~20 (p27 Eccles only reg Golgis in Hexs p210) & row-offset-oblate-stars,  G.MCX * G.MCY = 20*P.MCX * P.MCY = 20*200*19 =76000 um2, X=600u, Y=200u stars of 200u*(100+200+100)u => 80000 u2 so #P/#G=21.
+lw 9/2/13  For G.MCX = 4*P.MC,DX =800u, G.MCY = 100u, G.MCXO = G.MCX/2 = 400u, See lw_2sep13_input_file_plans_P-cell+Golgi.pdf
+lw 9/2/13  For G.A,DN=3, G.MA,DX1,2,3 = P.MC,DX = 200u, G.MA,DY1 = 200u, G.MA,DY2,3 = 100, G.MA,DXO1 = 000, G.MA,DXO2 = -200, G.MA,DXO3 = +200, G.MA,DYO1,2,3 = 0,   
+lw 9/2/13  For N-cells from Z = -20 to -324u in 20 layers, -16u apart, top half bottom at -172u.  Assume Golgi dendrites in upper half of granular layer rosettes (see p 206-7 Eccles Fig113 caption).
+lw 9/2/13 For G.dends from +320 (P.dend top) to -172u, G.MCZLVL=-75, G.DZ1,2,3= 492, G.DZO1,2,3=+149u (=75+320-492/2) 
+lw 9/2/13 For G.axons from -12 (N.dend top=-20+16/2) to -332u (N.dend bot=-324-16/2), G.AZ1,2,3= 320, G.AZO1,2,3= -97u (=75-12-320/2)
+lw 9/2/13 Golgi axons & dends not commingle with those of other Golgis {p27 Eccles}
+lw 9/3/13 Heavy mossy-fiber and granule parallel-fiber spiking onto wide Golgi dendrites => Golgi axon spikes that inhibit passing mossy-fiber spikes to granule dendrites at rosettes in same area (p120-122 F68-70, p129 F75, p210 F116 Eccles)
+lw 9/2/13 For DN=3, recheck MMSDMN = 0450, MMSDMX = 1200, TDPFMN = 0400, TDPFMX = 1000,
+lw 9/3/13 Eliminate mossy fiber rosette G.SYNDA= ,-1000, kludge soon    Check G-spiking rate
+jz 9/8/13 Indirect synda requires explicit TOSYNWT and OSYNTYP 
+lw 10/3/13 Give 4-way overlap of Golgis G.MCX,XO=400,200 (ne 800) 1/21->1/10.5
+lw 07/2/14 Changed dendritic field to include full granular layer. (re-evaluate p206-7 Eccles Fig113 caption).
+lw 07/08/14 Changed MDZ and MDZO for the minor mismatch of the axonal and dendritic fields in the bottom. Golgi DZ: Max = 320 => Top of P.dend  Min = -332 => btm of level 20 of N.dend
+hm-jz 07/13/14 adding 2nd smaller dn field: 1) Gap junctions only on upper field; 2) Angelo: lower wider than dendrite
+-->
+    <somas dx="150" dy="150" altox="0" mmz="-75:"/>
+    <!--<somas dx="400" dy="100" altox="200" mmz="-75:"/>-->
+    <!--<somas dx="400" dy="50" altox="200" mmz="-75:"/>-->
+    <axons n="1">
+        <field wx="300" wy="300" wz="320" ox="0" oy="0" oz="-97" asp="600"/>
+    </axons>
+    <!--<axons n="3">
+        <field wx="200" wy="200" wz="320" ox="0"    oy="0" oz="-97" asp="600"/>
+        <field wx="200" wy="100" wz="320" ox="-200" oy="0" oz="-97" asp="600"/>
+        <field wx="200" wy="100" wz="320" ox="200"  oy="0" oz="-97" asp="600"/>
+    </axons>-->
+    <dens n="1">
+        <field wx="300" wy="300" wz="652" ox="0" oy="0" oz="69" mmdsp="450:1200" mmpfT="400:1K" lrnxT="1K"/>
+    </dens>
+    <!--<dens n="2">
+        <field wx="300" wy="300" wz="332" oz="229" mmdsp="450:1200" mmpfT="400:1K" lrnxT="1K"/>
+        <field wx="150" wy="150" wz="320" oz="-97" mmdsp="450:1200" mmpfT="400:1K" lrnxT="1K"/>
+    </dens>-->
+    <!--<dens n="3">
+        <field wx="200" wy="200" wz="492" ox="0"    oy="0" oz="149" mmdsp="450:1200" mmpfT="400:1K" lrnxT="1K"/>
+        <field wx="200" wy="100" wz="492" ox="-200" oy="0" oz="149" mmdsp="450:1200" mmpfT="400:1K" lrnxT="1K"/>
+        <field wx="200" wy="100" wz="492" ox="200"  oy="0" oz="149" mmdsp="450:1200" mmpfT="400:1K" lrnxT="1K"/>
+    </dens>-->
+    <!--<dens n="1">
+        <field wx="300" wy="300" wz="492" ox="0" oy="0" oz="149" mmdsp="450:1200" mmpfT="400:1K" lrnxT="1K"/>
+    </dens>-->
+    <!--<dens n="1">
+        <field wx="300" wy="300" wz="656" ox="0" oy="0" oz="67" mmdsp="450:1200" mmpfT="400:1K" lrnxT="1K"/>
+    </dens>-->
+    <syns>
+    <!--<syns XTHRES="210" MCSPFR="10K" GTHDKM="766700">-->
+        <!--
+        outputtypes/ots bitmask values:
+        1 = learning
+        2 = suppressible connection
+        4 = binary fire
+        8 = triggers suppression (using its weight)
+        16 = does not incur a global synapse delay
+        -->
+        <ots R="8" rest="0"/>
+        <daodsT R="1K" rest="0"/>
+        <!--<owsT R="-20" rest="0"/>-->
+        <owsT R="-640" rest="0"/>
+    </syns>
+    <gjs aapT="0" ddpT="1K" sspT="0" adpT="0" aspT="0" dspT="0" condT="200"/>
+    <!-- Regular spiking (RS) -->
+    <izhi AT="20" BT="200" CT="-65K" DT="8K"/>
+    <!-- Fast spiking (FS) -->
+    <!--<izhi AT="100" BT="200" CT="-65K" DT="2K"/>-->
+    <!-- Intrinsically bursting (IB) -->
+    <!--<izhi AT="20" BT="200" CT="-55K" DT="4K"/>-->
+</type>
+
+<!-- Basket cells with axons directed right (+X) offbeam from soma -->
+<!-- (115-120)/2% of P-cell count -->
+<type id="3" char="B">
+<!--
+lw 3.21.13 MCX,Y=82,82(n:65,100)
+lw 9/3/13 (Eccles p94-96 F54,56; p208 F114) Basket axons inhibit Y5 x X10 >= 30-50 P-somas to side of 200u P-cell Y=L-beam  in offset 100u to side X900u x 100~5*19=p.MCY with 6x5 P-dend in field center 100+900/2 to side
+lw 9/3/13 B-axons inhibit at P-cell pre-axon bases = Z=0_-2u ~ lower P-dends
+lw 9/3/13 Dendrites of basket cells, in lower 1/3-1/2 of molecular layer(ML), lie X=Transversely, wide B.MDX = P.MDX dends, in lower 2/3 of ML (Eccles p15; p208 F114) #B=#A=#P*(1.15-1.20)/2  (p15 Eccles)
+lw 9/3/13 #P~1/(3750 um2=P.MCX*Y ftprint).  #B~1/(3750*2/(1.15_1.2)) = 1/6250_6400_6522 B.MCX*Y=200*32
+lw 9/3/13 0<B.MCZLVL<P.MDZ/(3_2) = +105_160 => B_A.MCZLVL=+120_100u  MDZ = 210-0u  B_A.MDZO =105-120_100 = -15_+5
+lw 9/3/13  B.MCZLVL = +120, A.MCZLVL=+100 so VIZ shows B over A for nearly co-located basket-soma pairs
+-->
+    <somas dx="200" dy="32" altox="0" mmz="120:"/>
+    <axons n="1">
+        <field wx="900" wy="100" wz="2" ox="550" oy="0" oz="-121" asp="1K"/>
+    </axons>
+    <dens n="1">
+        <field wx="200" wy="32" wz="210" oz="-15" mmdsp="500:600" mmpfT="400:1K" lrnxT="1K"/>
+    </dens>
+    <syns>
+    <!--<syns XTHRES="40" MCSPFR="2400" GTHDKM="749K">-->
+        <ots rest="0"/>
+        <daodsT P="1K" rest="0"/>
+        <owsT P="-200" rest="0"/>
+    </syns>
+    <!-- Regular spiking (RS) -->
+    <izhi AT="20" BT="200" CT="-65K" DT="8K"/>
+    <!-- Fast spiking (FS) -->
+    <!--<izhi AT="100" BT="200" CT="-65K" DT="2K"/>-->
+    <!-- Intrinsically bursting (IB) -->
+    <!--<izhi AT="20" BT="200" CT="-55K" DT="4K"/>-->
+</type>
+
+<!-- Basket cells with axons directed left (-X) offbeam from soma -->
+<!-- (115-120)/2% of P-cell count -->
+<type id="4" char="A">
+<!--
+lw 3.21.13 MCX,Y=82,82(n:65,100)
+lw 9/3/13 (Eccles p94-96 F54,56; p208 F114) Basket axons inhibit Y5 x X10 >= 30-50 P-somas to side of 200u P-cell Y=L-beam  in offset 100u to side X900u x 100~5*19=p.MCY with 6x5 P-dend in field center 100+900/2 to side
+lw 9/3/13 A-axons inhibit at P-cell pre-axon bases = Z=0_-2u ~ lower P-dends
+lw 9/3/13 Dendrites of basket cells, in lower 1/3-1/2 of molecular layer(ML), lie X=Transversely, wide A.MDX = P.MDX dends, in lower 2/3 of ML (Eccles p15; p208 F114) #B=#A=#P*(1.15-1.20)/2  (p15 Eccles)
+lw 9/3/13 #P~1/(3750 um2=P.MCX*Y ftprint).  #A~1/(3750*2/(1.15_1.2)) = 1/6250_6400_6522 A.MCX*Y=200*32
+lw 9/3/13 0<A.MCZLVL<P.MDZ/(3_2) = +105_160 => A.MCZLVL=+100u  MDZ = 210-0u A.MDZO=105-100 = +5
+-->
+    <somas dx="200" dy="32" altox="0" mmz="100:"/>
+    <axons>
+        <field wx="900" wy="100" wz="2" ox="-550" oy="0" oz="-101" asp="1K"/>
+    </axons>
+    <dens>
+        <field wx="200" wy="32" wz="210" oz="5" mmdsp="500:600" mmpfT="400:1K" lrnxT="1K"/>
+    </dens>
+    <syns>
+    <!--<syns XTHRES="40" MCSPFR="2400" GTHDKM="749K">-->
+        <ots rest="0"/>
+        <daodsT P="1K" rest="0"/>
+        <owsT P="-200" rest="0"/>
+    </syns>
+    <!-- Regular spiking (RS) -->
+    <izhi AT="20" BT="200" CT="-65K" DT="8K"/>
+    <!-- Fast spiking (FS) -->
+    <!--<izhi AT="100" BT="200" CT="-65K" DT="2K"/>-->
+    <!-- Intrinsically bursting (IB) -->
+    <!--<izhi AT="20" BT="200" CT="-55K" DT="4K"/>-->
+</type>
+
+<!-- Outer stellate cells (type B) with axon right (+X) of soma -->
+<!-- assume (115-120)/2% of P-cell count -->
+<type id="5" char="S">
+<!--
+lw 3.21.13 MCX,Y=82,82(n:65,100)
+lw 9/4/13 assume each stellate STI density same as each basket BA #S=#P*.586(=3750/6400) S.MCX*Y=200*32
+lw 9/4/13 (Eccles p208 F114) Outer stellate.b axons inhibit Y2 x X5 >= 4-6(?) P-dends to side of 200u P-cell Y=L-beam in offset 100u to side X800u x 40~2*19=p.MCY with 2x4 P-dend in field center 100+800/2 to side
+lw 9/4/13 Dendrites of outer stellate_b cells, in upper 1/3-1/2 of molecular layer(ML), lie X=Transversely, wide S.MDX = P.MDX dends, in upper 2/3 of ML between adjacent P-dends. (Eccles p58; p62-63 F37 T1; p208 F114)
+lw 9/4/13 I.MCZLVL = +280, S.MCZLVL=+270, T.MCZLVL=+260,so VIZ shows I over S over T in stellate-soma triplets Axonal synapses on P-dends at Z = CZ to 120u below; dend.syns at Z=CZ+40 to CZ-120u
+-->
+    <somas dx="200" dy="32" altox="0" mmz="270:"/>
+    <axons n="1">
+        <field wx="800" wy="40" wz="120" ox="500" oy="0" oz="-60" asp="700"/>
+    </axons>
+    <dens n="1">
+        <field wx="200" wy="32" wz="160" oz="-40" mmdsp="700:1K" mmpfT="600:1K" lrnxT="1K"/>
+    </dens>
+    <syns>
+    <!--<syns XTHRES="40" MCSPFR="2885" GTHDKM="744K">-->
+        <ots rest="0"/>
+        <daodsT P="1K" rest="0"/>
+        <owsT P="-1K" rest="0"/>
+    </syns>
+    <!-- Regular spiking (RS) -->
+    <izhi AT="20" BT="200" CT="-65K" DT="8K"/>
+    <!-- Fast spiking (FS) -->
+    <!--<izhi AT="100" BT="200" CT="-65K" DT="2K"/>-->
+    <!-- Intrinsically bursting (IB) -->
+    <!--<izhi AT="20" BT="200" CT="-55K" DT="4K"/>-->
+</type>
+
+<!-- Outer stellate cells (type B) with axon left (-X) of soma -->
+<!-- assume (115-120)/2% of P-cell count -->
+<type id="6" char="T">
+<!--
+lw 3.21.13 MCX,Y=82,82(n:65,100)
+lw 9/4/13 assume each stellate STI density same as each basket BA #T=#P*.586(=3750/6400) S.MCX*Y=200*32
+lw 9/4/13 (Eccles p208 F114) Outer stellate.b axons inhibit Y2 x X5 >= 4-6(?) P-dends to side of 200u P-cell Y=L-beam in offset 100u to side X800u x 40~2*19=p.MCY with 2x4 P-dend in field center 100+800/2 to side
+lw 9/4/13 Dendrites of outer stellate_b cells, in upper 1/3-1/2 of molecular layer(ML), lie X=Transversely, wide T.MDX = P.MDX dends, in upper 2/3 of ML between adjacent P-dends. (Eccles p58; p62-63 F37 T1; p208 F114)
+lw 9/4/13 I.MCZLVL = +280, S.MCZLVL=+270, T.MCZLVL=+260,so VIZ shows I over S over T in stellate-soma triplets Axonal synapses on P-dends at Z = CZ to 120u below; dend.syns at Z=CZ+40 to CZ-120u
+-->
+    <somas dx="200" dy="32" altox="0" mmz="260:"/>
+    <axons>
+        <field wx="800" wy="40" wz="120" ox="-500" oy="0" oz="-60" asp="700"/>
+    </axons>
+    <dens>
+        <field wx="200" wy="32" wz="160" oz="-40" mmdsp="700:1K" mmpfT="600:1K" lrnxT="1K"/>
+    </dens>
+    <syns>
+    <!--<syns XTHRES="40" MCSPFR="2885" GTHDKM="744K">-->
+        <ots rest="0"/>
+        <daodsT P="1K" rest="0"/>
+        <owsT P="-1K" rest="0"/>
+    </syns>
+    <!-- Regular spiking (RS) -->
+    <izhi AT="20" BT="200" CT="-65K" DT="8K"/>
+    <!-- Fast spiking (FS) -->
+    <!--<izhi AT="100" BT="200" CT="-65K" DT="2K"/>-->
+    <!-- Intrinsically bursting (IB) -->
+    <!--<izhi AT="20" BT="200" CT="-55K" DT="4K"/>-->
+</type>
+
+<!-- Local inhibitory cells (outer stellate, type A) -->
+<!-- assume (115-120)/2% of P-cell count -->
+<type id="7" char="I">
+<!--
+lw 3.21.13 MCX,Y=82,82(n:65,100)
+lw 9/4/13 assume each stellate STI density same as each basket BA #T=#P*.586(=3750/6400) S.MCX*Y=200*32
+lw 9/4/13 (Eccles p208 F114) Outer stellate.a axons weakly inhibit P-dends within a 200u P-cell Y=L-beam
+lw 9/4/13 Dendrites of outer stellate_a cells, in upper 1/3-1/2 of molecular layer(ML), lie X=Transversely, wide I.MDX = P.MDX dends, in upper 2/3 of ML between adjacent P-dends. (Eccles p58; p62-63 F37 T1; p208 F114)
+lw 9/4/13 I.MCZLVL = +280, S.MCZLVL=+270, T.MCZLVL=+260,so VIZ shows I over S over T in stellate-soma triplets Axonal synapses on P-dends at Z = CZ to 120u below; dend.syns at Z=CZ+40 to CZ-120u
+-->
+    <somas dx="200" dy="32" altox="0" mmz="280:"/>
+    <axons n="1">
+        <field wx="200" wy="32" wz="120" ox="0" oy="0" oz="-60" asp="700"/>
+    </axons>
+    <dens n="1">
+        <field wx="200" wy="32" wz="160" oz="-40" mmdsp="700:1K" mmpfT="600:1K" lrnxT="1K"/>
+    </dens>
+    <syns>
+    <!--<syns XTHRES="40" MCSPFR="2885" GTHDKM="744K">-->
+        <ots rest="0"/>
+        <daodsT P="1K" rest="0"/>
+        <owsT P="-1K" rest="0"/>
+    </syns>
+    <!-- Regular spiking (RS) -->
+    <izhi AT="20" BT="200" CT="-65K" DT="8K"/>
+    <!-- Fast spiking (FS) -->
+    <!--<izhi AT="100" BT="200" CT="-65K" DT="2K"/>-->
+    <!-- Intrinsically bursting (IB) -->
+    <!--<izhi AT="20" BT="200" CT="-55K" DT="4K"/>-->
+</type>
+
+<!-- Climbing fiber origin cells (spinal olivary nucleus) -->
+<!-- same spacing as P-cells -->
+<type id="8" char="C">
+<!--
+lw 9/4/13 C.axon1 covers vertically aligned P-dend-tree centered at +160 MDX,Y,Z=200,19,320 C.axon2 excites aligned Dentate nucleus cell inhibited by the P-cell axon.
+lw 9/4/13 Not yet implemented Climbing fiber collaterals exciting inhibitory Golgi, Basket, and Stellate cells with somas/dendrites near targeted single P-cell. (See Eccles p213 F117. Read Chap XII, p205-226 F113-123.)
+-->
+    <somas dx="200" dy="19" altox="100" mmz="-2K:"/>
+    <axons n="2">
+        <field wx="200" wy="19" wz="320" oz="2160" asp="2500"/>
+        <field wx="2"   wy="2"  wz="2"   oz="1K"   asp="2500"/>
+    </axons>
+    <!-- no climbing fiber dendrites in model, C must be force-fired externally. -->
+    <dens n="1">
+        <!-- one field with all default properties is needed to allow forced firing -->
+        <field/>
+    </dens>
+    <syns>
+    <!--<syns XTHRES="1" GTHDKM="1M">-->
+        <ots rest="0"/>
+        <daodsT P="10M" D="1K" rest="0"/>
+        <owsT P="80" D="10" rest="0"/>
+    </syns>
+    <!-- Regular spiking (RS) -->
+    <izhi AT="20" BT="200" CT="-65K" DT="8K"/>
+    <!-- Fast spiking (FS) -->
+    <!--<izhi AT="100" BT="200" CT="-65K" DT="2K"/>-->
+    <!-- Intrinsically bursting (IB) -->
+    <!--<izhi AT="20" BT="200" CT="-55K" DT="4K"/>-->
+</type>
+
+<!-- Mossy fiber origin cells -->
+<type id="9" char="M">
+<!--
+{N:M-somas =Eccles=90_135:1=100:1 | Web=200:1), N-somas@20lvl*0.900{=N.TCZP}=18 N/top_lattice_point}
+lw 8.11._3.19.13 R.MAXX,YY=MCX,Y=10,10(n:14,14,n:25,10). M.TCZP=500(n:1K) Later check synapses from D.MAXX,YY=1280,320;SYNDA=250
+lw 9/4/13 M-axon1 centers on Z=2328-2500 = -172 = center of 20 granule layers -16 apart from Z=-20 to -324  Z = -12 to -332 is Z extent of granule cell layer boundaries = 320 = -20 - -324 + 16.
+lw 10/22/13 M.MCX,Y=2*R.MCX,Y=M.MA1XX,YY=20,20 so 1/4th # M.somas with average 40 Rosettes each
+lw 10/22/13 M.MA2XX,YY=2*D.MC,DX,Y=400,38 (ne 1280,320) so fewer M->D syns ??
+lw 10/24/13 M.MCX,YMN=6,6=1+R.MDX,Y/2 (ne 1,1)
+jz 03/23/14 MMSAS from The Cerebellum as a Neuronal Machine, 1967, pp 116-155
+-->
+    <somas dx="20" dy="20" mmx="6:" mmy="6:" mmz="-2500:">
+        <zlvs n="1">
+            <psT>1K,</psT>
+        </zlvs>
+    </somas>
+    <axons n="2">
+        <field wx="20"  wy="20" wz="320" ox="0" oy="0" oz="2328" asp="1700"/>
+        <field wx="400" wy="38" wz="2"   ox="0" oy="0" oz="1500" asp="1700"/>
+    </axons>
+    <!-- no mossy fiber dendrites in model, M must be force-fired externally. -->
+    <dens n="1">
+        <!-- one field with all default properties is needed to allow forced firing -->
+        <field/>
+    </dens>
+    <syns>
+    <!--<syns XTHRES="1" GTHDKM="1M">-->
+        <ots R="20" rest="0"/>
+        <daodsT R="1K" D="1K" rest="0"/>
+        <owsT R="40" D="1K" rest="0"/>
+    </syns>
+    <!-- Regular spiking (RS) -->
+    <izhi AT="20" BT="200" CT="-65K" DT="8K"/>
+    <!-- Fast spiking (FS) -->
+    <!--<izhi AT="100" BT="200" CT="-65K" DT="2K"/>-->
+    <!-- Intrinsically bursting (IB) -->
+    <!--<izhi AT="20" BT="200" CT="-55K" DT="4K"/>-->
+</type>
+
+<!-- Rosettes (done as separate neuron) -->
+<type id="10" char="R">
+<!--
+lw 3.17.13 MCX,Y=16->14(n:5), TCZP=1000(n:147), MAXX,YY=16->14(n:5),MDX,Y=16->14(n:25,5) Only 1 of linked R=>N Zlocations can be random.
+lw Keep N.MDX,Y=2*R.MCX,Y
+lw 8.11.13 R.MCX,Y;MAXX,YY;MDX,Y=10,10(n:14,14) R.TCZP*=500(n:1000) random R grid Chk R->G syn#s
+-->
+    <somas dx="10" dy="10" dz="-16" mmz="-20:">
+        <zlvs n="20">
+            <psT>500*20</psT>
+        </zlvs>
+    </somas>
+    <axons n="1">
+        <field wx="10" wy="10" wz="16" asp="500"/>
+    </axons>
+    <dens n="1">
+        <field wx="10" wy="10" wz="16" mmdsp="1K:1K"/>
+    </dens>
+    <syns>
+    <!--<syns TISDRF="1K" XTHRES="1" GTHDKM="1M">-->
+        <ots N="2" rest="0"/>
+        <daodsT N="1K" G="1K" rest="0"/>
+        <owsT N="10K" G="30" rest="0"/>
+    </syns>
+    <!-- Regular spiking (RS) -->
+    <izhi AT="20" BT="200" CT="-65K" DT="8K"/>
+    <!-- Fast spiking (FS) -->
+    <!--<izhi AT="100" BT="200" CT="-65K" DT="2K"/>-->
+    <!-- Intrinsically bursting (IB) -->
+    <!--<izhi AT="20" BT="200" CT="-55K" DT="4K"/>-->
+</type>
+
+<!-- Dentate and other subcortical nucleus cells -->
+<!-- same spacing as P-cells -->
+<type id="11" char="D">
+    <somas dx="200" dy="19" altox="100" mmz="-1K:"/>
+    <!-- no Dentate nucleus axons in model, observe firings from C+ -P inputs. -->
+    <axons n="1">
+        <!-- one field with all default properties is needed to allow forced firing -->
+        <field/>
+    </axons>
+    <dens n="1">
+        <field wx="200" wy="19" wz="2" oz="0" mmdsp="700:700" mmpfT="100:1K" lnrxT="1K"/>
+    </dens>
+    <syns>
+    <!--<syns TISDRF="5K" XTHRES="40" MCSPFR="2K" GTHDKM="750K">-->
+        <ots rest="0"/>
+        <daodsT rest="0"/>
+        <owsT P="1K" rest="0"/>
+    </syns>
+    <!-- Regular spiking (RS) -->
+    <izhi AT="20" BT="200" CT="-65K" DT="8K"/>
+    <!-- Fast spiking (FS) -->
+    <!--<izhi AT="100" BT="200" CT="-65K" DT="2K"/>-->
+    <!-- Intrinsically bursting (IB) -->
+    <!--<izhi AT="20" BT="200" CT="-55K" DT="4K"/>-->
+</type>
+
+</types>
+
+</input>

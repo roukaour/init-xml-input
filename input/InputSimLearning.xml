@@ -1,0 +1,83 @@
+<!-- Based on InputSimLearning.txt as committed to BitBucket on 20131001 -->
+<input date="20131001">
+
+<params maxc="10K" mspcT="2K" gjs="0">
+<!-- MAXPVP=1000, ABTHRS=20 -->
+    <simspace mmx=":100" mmy=":100"/>
+    <izhi v="-70" u="-14" vth="30" const-v2t="40" const-v="5" const-v0="140"/>
+    <filters>
+        <!--
+        Each <filter> element defines a filter to be fired for the cell type specified by the type attribute (ID or character).
+        The timeminmax/mmt attribute is in milliseconds.
+        The recur/r attribute is how often the filter will fire in milliseconds.
+        The [x+y+z]minmax/mm[x+y+z] attributes define a bounding box.
+        The fractionT/fracT attribute is a fraction in 1,000ths of cells to fire of the specified type within the bounding box (1000 = 100%). To enable image filters (image_filter[_FILTER_INDEX].pgm) set it to -1 or to "image".
+        The index/id attribute explicitly states the index. Index 0 is reserved for a progressive mesh (flyswatter) firing pattern.
+        -->
+        <filter id="0" type="U" mmt="1:1000"  r="75" mmx="0:1K"  mmy="0:1K" mmz="-20K:20K" fracT="1K"/>
+        <filter id="1" type="L" mmt="227:303" r="75" mmx="0:78"  mmy="0:38" mmz="-20K:20K" fracT="1K"/>
+        <filter id="2" type="L" mmt="523:675" r="75" mmx="38:78" mmy="0:78" mmz="-20K:20K" fracT="1K"/>
+    </filters>
+    <stdpsT>-10*20, -40*20, 0, 160*20, 40*20</stdpsT>
+</params>
+
+<types n="2" chars="U L">
+
+<!-- Upper cells -->
+<type id="0" char="U">
+    <somas dx="1" dy="1" altox="0" mmz="0:">
+        <zlvs n="1">
+            <psT>1000,</psT>
+            <asfsT>1000,</asfsT>
+        </zlvs>
+    </somas>
+    <axons n="1">
+        <field wx="3" wy="3" wz="1" ox="0" oy="0" oz="-10" asp="6"/>
+        <!-- asp="2000" means 5 ms for -10 micra -->
+    </axons>
+    <dens n="1">
+        <field wx="2" wy="2" wz="2" mmdsp="4:7" mmpfT="500:1K" lnrxT="6K"/>
+    </dens>
+    <syns its="0">
+        <ots U="1"/>
+        <daodsT U="0" L="1K"/>
+        <owsT U="3K"/>
+    </syns>
+    <!-- Regular spiking (RS) -->
+    <izhi AT="20" BT="200" CT="-65K" DT="8K"/>
+    <!-- Fast spiking (FS) -->
+    <!--<izhi AT="100" BT="200" CT="-65K" DT="2K"/>-->
+</type>
+
+<!-- Lower cells -->
+<type id="1" char="L">
+    <somas dx="1" dy="1" altox="0" mmz="-10:">
+        <zlvs n="1">
+            <psT>1000,</psT>
+            <asfsT>1000,</asfsT>
+        </zlvs>
+    </somas>
+    <!-- added 3x3E3 5x5I-1 assumes no self-synapses. Invokes learning E, not I -->
+    <axons n="2">
+        <field wx="3" wy="3" wz="1" ox="0" oy="0" oz="0" asp="8"/>
+        <field wx="5" wy="5" wz="1" ox="0" oy="0" oz="0" asp="8"/>
+        <!-- asp="1000" means 1 ms per micron axonal speed - Excitatory,Inhibitory -->
+    </axons>
+    <dens n="1">
+        <field wx="1" wy="1" wz="1" mmdsp="4:7" mmpfT="990:1K" lnrxT="6K"/>
+    </dens>
+    <syns its="0">
+        <ots U="1" L="0"/>
+        <!-- <ots U="1" L="0"/> means excitatory syns learn, inhibitory do not, for now -->
+        <daodsT U="0" L="1K"/>
+        <owsT U="300" L="-100"/>
+    </syns>
+    <!-- Regular spiking (RS) -->
+    <izhi AT="20" BT="200" CT="-65K" DT="8K"/>
+    <!-- Fast spiking (FS) -->
+    <!--<izhi AT="100" BT="200" CT="-65K" DT="2K"/>-->
+</type>
+
+</types>
+
+</input>

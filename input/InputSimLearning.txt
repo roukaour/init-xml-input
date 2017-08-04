@@ -1,0 +1,82 @@
+- 20130407; CRC = 854051368;
+
+$PARAMS
+MXCYCL = 10000, MAXPVP = 1000,
+NCELLT = 2, 
+ABTHRS = 20,
+MSIMYMX = 100, MSIMXMX = 100,
+
+DT_STEP_T = 2000,
+
+V_VOLTAGE = -70,
+U_IZHI = -14,
+CONST_V2_IZH_T = 40,
+CONST_V_IZH = 5,
+CONST_V0_IZH = 140,
+CONST_THRESH_IZH =30,
+
+-- FORCE_* are read in as columns which define a filter to be fired for the selected types (FORCE_TYPE).
+-- FORCE_FROM and FORCE_TO are in cycles
+-- FORCE_RECURRENCE is how often the filter will fire in milliseconds
+-- FORCE_ X Y Z are bounding boxes
+-- FORCE_TYPE is a bit filter on types (6 = 110 => M + R but not D); only these types will fire from this firing mask.  0 is off.
+-- FORCE_T_FRACT is a 1,000ths percentage of cells to fire within the bounding box and selected types.
+-- First column is a progressive mesh (flyswatter) firing pattern.	
+FORCE_FROM = 		1, 	   227, 	   523,
+FORCE_TO =	     1000, 	   303, 	   675,
+FORCE_RECURRENCE =     75, 	    75,		    75,
+FORCE_MIN_X = 		0, 	     0,  	    38,
+FORCE_MAX_X =        1000, 	    78, 	    78,
+FORCE_MIN_Y = 		0, 	     0, 	     0,
+FORCE_MAX_Y = 	     1000, 	    38, 	    78,
+FORCE_MIN_Z = 	   -20000,	-20000, 	-20000,
+FORCE_MAX_Z = 	    20000, 	 20000, 	 20000,
+FORCE_TYPE = 		2, 	     1, 	     1,
+FORCE_T_FRACT =      1000, 	  1000, 	  1000,
+
+-- Hundreths %
+STDP_ADJUSTMENTS = -10,-10,-10,-10,-10,-10,-10,-10,-10,-10,-10,-10,-10,-10,-10,-10,-10,-10,-10,-10,-40,-40,-40,-40,-40,-40,-40,-40,-40,-40,-40,-40,-40,-40,-40,-40,-40,-40,-40,-40,0,160,160,160,160,160,160,160,160,160,160,160,160,160,160,160,160,160,160,160,160,40,40,40,40,40,40,40,40,40,40,40,40,40,40,40,40,40,40,40,40,
+- INIT input parser should also allow shorter syntox -5:20,-20:20,0,80:20,40:20,
+
+$END
+U L 
+U IS FOR UPPER CELLS 0
+$CELL
+MCY = 1, MCX = 1, MCXO = 000, MCZLVL = 0,
+TCZP = 1000,
+TCZSF = 1000,
+MAYY = 3, MAXX = 3, MAZZ = 1, MAYO = 0, MAXO = 0, MAZO = -010,
+MMSAS = 00006,  
+- MMSAS = 02000 means 5 ms for -10 micra
+MDY = 2, MDX = 2, MDZ = 2,
+MMSDMN = 04, MMSDMX = 07, TDPFMN = 0500, TDPFMX = 1000,
+- TDLNRX = 6000, SMISNT = 0, OSNTYP = 1,
+TDLNRX = 6000, SMISNT = 0, OSNTYP = 1,
+TOSYNWT = 3000, FCH = 85,
+SYNDA = 0000,1000,
+- REGULAR SPIKING RS
+A_IZHI_T = 20, B_IZHI_T = 200, C_IZHI_T = -65000, D_IZHI_T = 8000,
+- FAST SPIKING FS
+-A_IZHI_T = 100, B_IZHI_T = 200, C_IZHI_T = -65000, D_IZHI_T = 2000,
+$END
+L IS FOR LOWER CELLS 1
+$CELL
+MCY = 1, MCX = 1, MCXO = 000, MCZLVL = -0010,
+TCZP = 1000,
+TCZSF = 1000,
+- added 3x3E3 5x5I-1 assumes no self-synapses. Invokes learning E, not I
+AN = 2, MAYY = 03,05, MAXX = 03,05, MAZZ = 01,01, 
+TOSYNWT = 300,-100, OSNTYP = 1,0, MMSAS = 8,8,
+- OSNTYP = 1,0 means excitatory syns learn, inhibitory do not, for now
+- MMSAS = 1000 means 1 ms per micron axonal speed - Excitatory,Inhibitory
+MAYO = 0, MAXO = 0, MAZO = 0,
+MDY = 1, MDX = 1, MDZ = 1,
+MMSDMN = 04, MMSDMX = 07, TDPFMN = 0990, TDPFMX = 1000,
+TDLNRX = 6000, SMISNT = 0,
+FCH = 76,
+SYNDA = 0000,1000,
+- REGULAR SPIKING RS
+A_IZHI_T = 20, B_IZHI_T = 200, C_IZHI_T = -65000, D_IZHI_T = 8000,
+- FAST SPIKING FS
+-A_IZHI_T = 100, B_IZHI_T = 200, C_IZHI_T = -65000, D_IZHI_T = 2000,
+$END
